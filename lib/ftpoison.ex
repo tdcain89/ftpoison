@@ -1,0 +1,2 @@
+defmodule Ftpoison do
+end
