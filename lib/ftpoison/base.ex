@@ -6,7 +6,10 @@ defmodule FTPoison.Base do
       @doc "Changes the working directory at the remote server to Dir."
       @spec cd(PID, String.t) :: String.t
       def cd(pid, directory) do
-        :ftp.cd(pid, to_char_list(directory))
+        case :ftp.cd(pid, to_char_list(directory)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
       end
 
       @doc "Starts a standalone FTP client process (without the Inets service framework) 
@@ -26,18 +29,27 @@ defmodule FTPoison.Base do
       
       @spec recv(PID, String.t) :: {:ok, PID}
       def recv(pid, remote_file) do
-        :ftp.recv(pid, to_char_list(remote_file))
+        case :ftp.recv(pid, to_char_list(remote_file)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
       end
       
       @spec recv(PID, String.t, String.t) :: {:ok, PID}
       def recv(pid, remote_file, local_file) do
-        :ftp.recv(pid, to_char_list(remote_file), to_char_list(local_file))
+        case :ftp.recv(pid, to_char_list(remote_file), to_char_list(local_file)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
       end
       
       @spec start(String.t) :: {:ok, PID} | {:error, {atom, atom}}
       def start(host) do
         start_inets
-        :inets.start(:ftpc, host: to_char_list(host))
+        case :inets.start(:ftpc, host: to_char_list(host)) do
+          {:ok, pid} -> pid
+          e -> handle_error(e)
+        end
       end
       
       @spec stop(PID) :: any
@@ -47,7 +59,10 @@ defmodule FTPoison.Base do
 
       @spec user(PID, String.t, String.t) :: {:ok, PID}
       def user(pid, username, password) do
-        :ftp.user(pid, to_char_list(username), to_char_list(password))
+        case :ftp.user(pid, to_char_list(username), to_char_list(password)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
       end
       
       @spec start_inets :: :ok
@@ -62,7 +77,7 @@ defmodule FTPoison.Base do
       
       defp handle_error(error) do
         message = case error do
-          {:error, reason} -> raise %Error{reason: to_string(reason)}
+          {:error, reason} -> raise %Error{reason: reason}
           _ -> nil
         end
       end
