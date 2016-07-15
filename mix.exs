@@ -1,4 +1,4 @@
-defmodule Ftpoison.Mixfile do
+defmodule FTPoison.Mixfile do
   use Mix.Project
 
   def project do
