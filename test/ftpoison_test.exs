@@ -10,7 +10,7 @@ defmodule FTPoisonTest do
     pid = FTPoison.start("localhost")
     refute is_nil(pid)
   end
-  
+
   test """
   start/1
   given invalid host
@@ -20,7 +20,7 @@ defmodule FTPoisonTest do
       FTPoison.start("notaserver")
     end
   end
-  
+
   test """
   start/1
   given valid host
@@ -31,7 +31,7 @@ defmodule FTPoisonTest do
     pid = FTPoison.start("localhost")
     refute is_nil(pid)
   end
-  
+
   test """
   pwd/1
   given active FTP PID
@@ -40,6 +40,17 @@ defmodule FTPoisonTest do
     pid = FTPoison.start("localhost")
     assert_raise FTPoison.Error, " Please login with USER and PASS.\r\n", fn ->
       FTPoison.pwd(pid) == "/"
+    end
+  end
+
+  test """
+  ls/1
+  given active FTP PID
+  returns the listing as a String
+  """ do
+    pid = FTPoison.start("localhost")
+    assert_raise FTPoison.Error, " Please login with USER and PASS.\r\n", fn ->
+      FTPoison.ls(pid, "/") == ""
     end
   end
 end
