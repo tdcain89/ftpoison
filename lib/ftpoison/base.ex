@@ -27,11 +27,20 @@ defmodule FTPoison.Base do
         end
       end
 
-      @doc "Returns the directory listing at the remote server"
-      @spec ls(PID, String.t) :: String.t
-      def ls(pid, path \\ ".") do
-        case :ftp.ls(pid, to_char_list(path)) do
-          {:ok, dir_listing} -> to_string dir_listing
+      @doc "Returns a list of remote files in the current directory"
+      @spec list(PID) :: String.t
+      def list(pid) do
+        case :ftp.nlist(pid) do
+          {:ok, dir_listing} -> to_string(dir_listing) |> String.split("\r\n", trim: true)
+          e -> handle_error(e)
+        end
+      end
+
+      @doc "Returns a list of remote files matching the specified path (supporting globs)"
+      @spec list(PID, String.t) :: String.t
+      def list(pid, path) do
+        case :ftp.nlist(pid, to_char_list(path)) do
+          {:ok, dir_listing} -> to_string(dir_listing) |> String.split("\r\n", trim: true)
           e -> handle_error(e)
         end
       end

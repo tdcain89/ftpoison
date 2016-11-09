@@ -44,13 +44,13 @@ defmodule FTPoisonTest do
   end
 
   test """
-  ls/1
+  list/1
   given active FTP PID
   returns the listing as a String
   """ do
     pid = FTPoison.start("localhost")
     assert_raise FTPoison.Error, " Please login with USER and PASS.\r\n", fn ->
-      FTPoison.ls(pid, "/") == ""
+      FTPoison.list(pid) == []
     end
   end
 end
