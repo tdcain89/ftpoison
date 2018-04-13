@@ -86,7 +86,7 @@ defmodule FTPoison.Base do
       @spec send_bin(PID, String.t, String.t) :: :ok
       def send_bin(pid, contents, remote_file) do
         case :ftp.send_bin(pid, contents, to_charlist(remote_file)) do
-          :ok -> :ok
+          :ok -> pid
           e -> handle_error(e)
         end
       end
@@ -94,7 +94,7 @@ defmodule FTPoison.Base do
       @spec delete(PID, String.t) :: {:ok, PID}
       def delete(pid, remote_file) do
         case :ftp.delete(pid, to_charlist(remote_file)) do
-          :ok -> :ok
+          :ok -> pid
           e -> handle_error(e)
         end
       end
