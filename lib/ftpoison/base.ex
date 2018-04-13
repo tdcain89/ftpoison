@@ -6,7 +6,7 @@ defmodule FTPoison.Base do
       @doc "Changes the working directory at the remote server to Dir."
       @spec cd(PID, String.t) :: String.t
       def cd(pid, directory) do
-        case :ftp.cd(pid, to_char_list(directory)) do
+        case :ftp.cd(pid, to_charlist(directory)) do
           :ok -> pid
           e -> handle_error(e)
         end
@@ -39,7 +39,7 @@ defmodule FTPoison.Base do
       @doc "Returns a list of remote files matching the specified path (supporting globs)"
       @spec list(PID, String.t) :: String.t
       def list(pid, path) do
-        case :ftp.nlist(pid, to_char_list(path)) do
+        case :ftp.nlist(pid, to_charlist(path)) do
           {:ok, dir_listing} -> to_string(dir_listing) |> String.split("\r\n", trim: true)
           e -> handle_error(e)
         end
@@ -47,7 +47,7 @@ defmodule FTPoison.Base do
 
       @spec recv(PID, String.t) :: {:ok, PID}
       def recv(pid, remote_file) do
-        case :ftp.recv(pid, to_char_list(remote_file)) do
+        case :ftp.recv(pid, to_charlist(remote_file)) do
           :ok -> pid
           e -> handle_error(e)
         end
@@ -55,7 +55,7 @@ defmodule FTPoison.Base do
 
       @spec recv(PID, String.t, String.t) :: {:ok, PID}
       def recv(pid, remote_file, local_file) do
-        case :ftp.recv(pid, to_char_list(remote_file), to_char_list(local_file)) do
+        case :ftp.recv(pid, to_charlist(remote_file), to_charlist(local_file)) do
           :ok -> pid
           e -> handle_error(e)
         end
@@ -63,8 +63,8 @@ defmodule FTPoison.Base do
 
       @spec start(String.t) :: {:ok, PID} | {:error, {atom, atom}}
       def start(host) do
-        start_inets
-        case :inets.start(:ftpc, host: to_char_list(host)) do
+        start_inets()
+        case :inets.start(:ftpc, host: to_charlist(host)) do
           {:ok, pid} -> pid
           e -> handle_error(e)
         end
@@ -77,7 +77,7 @@ defmodule FTPoison.Base do
 
       @spec user(PID, String.t, String.t) :: {:ok, PID}
       def user(pid, username, password) do
-        case :ftp.user(pid, to_char_list(username), to_char_list(password)) do
+        case :ftp.user(pid, to_charlist(username), to_charlist(password)) do
           :ok -> pid
           e -> handle_error(e)
         end
@@ -88,9 +88,9 @@ defmodule FTPoison.Base do
         :inets.start
       end
 
-      @spec to_char_list(String.t) :: List.t
-      defp to_char_list(string) do
-        string |> String.to_char_list
+      @spec to_charlist(String.t) :: List.t
+      defp to_charlist(string) do
+        string |> String.to_charlist
       end
 
       defp handle_error(error) do
