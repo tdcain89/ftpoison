@@ -61,6 +61,46 @@ defmodule FTPoison.Base do
         end
       end
 
+      @spec recv_bin(PID, binary()) :: {:ok, binary()}
+      def recv_bin(pid, remote_file) do
+        case :ftp.recv_bin(pid, to_charlist(remote_file)) do
+          {:ok, contents} -> {:ok, contents}
+          e -> handle_error(e)
+        end
+      end
+
+      @spec send(PID, String.t) :: {:ok, PID}
+      def send(pid, local_file) do
+        case :ftp.send(pid, to_charlist(local_file)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
+      end
+
+      @spec send(PID, String.t, String.t) :: {:ok, PID}
+      def send(pid, local_file, remote_file) do
+        case :ftp.send(pid, to_charlist(local_file), to_charlist(remote_file)) do
+          :ok -> pid
+          e -> handle_error(e)
+        end
+      end
+
+      @spec send_bin(PID, String.t, String.t) :: :ok
+      def send_bin(pid, contents, remote_file) do
+        case :ftp.send_bin(pid, contents, to_charlist(remote_file)) do
+          :ok -> :ok
+          e -> handle_error(e)
+        end
+      end
+
+      @spec delete(PID, String.t) :: {:ok, PID}
+      def delete(pid, remote_file) do
+        case :ftp.delete(pid, to_charlist(remote_file)) do
+          :ok -> :ok
+          e -> handle_error(e)
+        end
+      end
+
       @spec start(String.t) :: {:ok, PID} | {:error, {atom, atom}}
       def start(host) do
         start_inets()
