@@ -1,6 +1,4 @@
 defmodule FTPoison.Base do
-  alias FTPoison.Error
-
   defmacro __using__(_) do
     quote do
       @doc "Changes the working directory at the remote server to Dir."
@@ -134,10 +132,7 @@ defmodule FTPoison.Base do
       end
 
       defp handle_error(error) do
-        message = case error do
-          {:error, reason} -> raise %Error{reason: reason}
-          _ -> nil
-        end
+        error
       end
     end
   end
