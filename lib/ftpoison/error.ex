@@ -4,7 +4,7 @@ defmodule FTPoison.Error do
 
   def message(%__MODULE__{reason: reason}), do: parse_error_reason(reason)
 
-  def parse_error_reason(reason) when is_atom(reason), do: error_reason_map[reason]
+  def parse_error_reason(reason) when is_atom(reason), do: error_reason_map()[reason]
   def parse_error_reason(reason), do: to_string(reason)
 
   defp error_reason_map do
